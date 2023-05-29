@@ -1,0 +1,32 @@
+name: 'Deploy application'
+
+on:
+  push:
+    branches:
+      - master
+env:
+  AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+  AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_ACCESS_KEY_SECRET }}
+  AWS_DEFAULT_REGION: eu-central-1
+
+
+jobs:
+#  build:
+#    runs-on: ubuntu-latest
+#    steps:
+#      - name: test and build js
+#        uses: ejfschmittel/actions/npm_test_and_build@master
+#        with:
+#          artifact_name: ${{ github.event.repository.name }}-${{ github.event.after }}
+#          artifact_path: dist
+#  deploy:
+#    needs:
+#      - build
+#    runs-on: ubuntu-latest
+#    steps:
+#      - name: deploy to s3 bucket
+#        uses: ejfschmittel/actions/deploy_to_s3@master
+#        with:
+#          bucket_name: "es-frontend-test-bucket"
+#          artifact_name: ${{ github.event.repository.name }}-${{ github.event.after }}
+#          artifact_path: dist
