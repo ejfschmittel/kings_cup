@@ -1,18 +1,16 @@
 import {useState} from "react";
 
+import "./styles/main.scss";
+import {Card} from "./components/Card";
+
 function App() {
-
-    const [name, setName] = useState("")
-
-    const onClick = () => {
-    console.log("button clicked")
-    }
 
   return (
     <div className="App">
-        <h1 data-testid="main-headline">Hello (New): Anonymous User</h1>
-        <input data-testid="main-input" placeholder={"name"}/>
-        <button onClick={onClick}>Click me</button>
+    <h1>Kings cup</h1>
+      <div style={{width: "100%", height: "600px", background: "#ddd", display: "flex", justifyContent: "center", alignItems: "center"}}>
+        <Card title={"test"} description={"Do something crazy"} cardValue={""}/>
+      </div>
     </div>
   );
 }
