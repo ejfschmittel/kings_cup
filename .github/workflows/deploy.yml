@@ -5,9 +5,8 @@ on:
     branches:
       - master
 env:
-  AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-  AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_ACCESS_KEY_SECRET }}
-  AWS_DEFAULT_REGION: eu-central-1
+  TF_LOG: INFO
+  AWS_DEFAULT_REGION: "eu-central-1"
 
 
 jobs:
@@ -27,11 +26,18 @@ jobs:
       run:
         shell: bash
         # We keep Terraform files in the terraform directory.
-        working-directory: ./s3_terraform
+        working-directory: ./terraform
 
     steps:
       - name: Checkout the repository to the runner
         uses: actions/checkout@v2
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          - role-to-assume: ${{ secrets.AWS_ROLE }}
+          - aws-region: ${{ env.AWS_REGION }}
+          - role-session-name: GitHub-OIDC-TERRAFORM
 
       - name: Setup Terraform with specified version on the runner
         uses: hashicorp/setup-terraform@v2

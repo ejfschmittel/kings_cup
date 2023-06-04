@@ -6,7 +6,7 @@ on:
 
 env:
   TF_LOG: INFO
-  AWS_REGION: "eu-central-1"
+  AWS_DEFAULT_REGION: "eu-central-1"
 
 jobs:
   build:
@@ -24,7 +24,7 @@ jobs:
       run:
         shell: bash
         # We keep Terraform files in the terraform directory.
-        working-directory: ./s3_terraform
+        working-directory: ./terraform
 
     steps:
       - name: Checkout the repository to the runner
