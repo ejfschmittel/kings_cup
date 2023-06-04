@@ -11,22 +11,61 @@ env:
 
 
 jobs:
-#  build:
-#    runs-on: ubuntu-latest
-#    steps:
-#      - name: test and build js
-#        uses: ejfschmittel/actions/npm_test_and_build@master
-#        with:
-#          artifact_name: ${{ github.event.repository.name }}-${{ github.event.after }}
-#          artifact_path: dist
-#  deploy:
-#    needs:
-#      - build
-#    runs-on: ubuntu-latest
-#    steps:
-#      - name: deploy to s3 bucket
-#        uses: ejfschmittel/actions/deploy_to_s3@master
-#        with:
-#          bucket_name: "es-frontend-test-bucket"
-#          artifact_name: ${{ github.event.repository.name }}-${{ github.event.after }}
-#          artifact_path: dist
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: test and build js
+        uses: ejfschmittel/actions/npm_test_and_build@master
+        with:
+          artifact_name: ${{ github.event.repository.name }}-${{ github.event.after }}
+          artifact_path: dist
+
+  infra:
+    name: "Plan terraform"
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+        # We keep Terraform files in the terraform directory.
+        working-directory: ./s3_terraform
+
+    steps:
+      - name: Checkout the repository to the runner
+        uses: actions/checkout@v2
+
+      - name: Setup Terraform with specified version on the runner
+        uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_version: 1.3.0
+
+      - name: Terraform init
+        id: init
+        run: terraform init
+
+      - name: Terraform format
+        id: fmt
+        run: terraform fmt -check
+
+      - name: Terraform validate
+        id: validate
+        run: terraform validate
+
+      - name: Terraform plan
+        id: plan
+        run: terraform plan -input=false
+
+      - name: Terraform apply
+        run: terraform apply -auto-approve
+
+  deploy:
+    needs:
+      - build
+      - infra
+    runs-on: ubuntu-latest
+    steps:
+      - name: deploy to s3 bucket
+        uses: ejfschmittel/actions/deploy_to_s3@master
+        with:
+          bucket_name: "ejf-kings-cup"
+          artifact_name: ${{ github.event.repository.name }}-${{ github.event.after }}
+          artifact_path: dist
