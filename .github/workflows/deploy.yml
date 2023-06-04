@@ -72,6 +72,13 @@ jobs:
       - infra
     runs-on: ubuntu-latest
     steps:
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE }}
+          aws-region: ${{ env.AWS_DEFAULT_REGION }}
+          role-session-name: GitHub-OIDC-TERRAFORM
+
       - name: deploy to s3 bucket
         uses: ejfschmittel/actions/deploy_to_s3@master
         with:
