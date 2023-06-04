@@ -7,6 +7,10 @@ on:
 env:
   TF_LOG: INFO
   AWS_DEFAULT_REGION: "eu-central-1"
+  AWS_ROLE: ${{secrets.AWS_ROLE}}
+
+permissions:
+  id-token: write # need this for OIDC
 
 jobs:
   build:
@@ -34,7 +38,7 @@ jobs:
         uses: aws-actions/configure-aws-credentials@v1
         with:
           role-to-assume: ${{ secrets.AWS_ROLE }}
-          aws-region: ${{ env.AWS_DEFAULT_REGION }}
+          aws-region: eu-central-1
           role-session-name: GitHub-OIDC-TERRAFORM
 
       - name: Setup Terraform with specified version on the runner

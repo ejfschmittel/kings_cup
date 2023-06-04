@@ -8,6 +8,9 @@ env:
   TF_LOG: INFO
   AWS_DEFAULT_REGION: "eu-central-1"
 
+permissions:
+  id-token: write # need this for OIDC
+
 
 jobs:
   build:
